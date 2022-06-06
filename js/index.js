@@ -119,5 +119,5 @@ fetch('https://api.github.com/users/Rawiros/repos')
     
     debug.log("Got repos list!");
     var Projects = await res.json();
-    Projects.filter(project => !(new String(project.description).includes("!include"))).forEach(project => ProjectsList.appendChild(new CardProject(project)));
+    Projects.filter(project => project.topics.includes("page-include")).forEach(project => ProjectsList.appendChild(new CardProject(project)));
 });
