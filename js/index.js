@@ -1,21 +1,11 @@
-const ProjectsList = document.querySelector("div.projects-list");
-var debug = {
-    log: (...args) => console.log("%cDebug%c", "color:#0984e3", "color:unset", ...args)
+var DOM = {
+    Projects: document.querySelector("div.projects-list")
 };
 
-/**
- * Material Icons - Icon Dom
- * @param {String} name Icon Name 
- */
- function Icon(name){
-    const i = document.createElement("i");
-    i.classList.add("material-icons");
-    i.innerText = name;
-    return i;
-};
+var debug = (...args) => console.log("%cDebug%c", "color:#0984e3", "color:unset", ...args);
 
+// Class CardProject
 class CardProject {
-
     /**
      * Create Card With Project Info
      * @param {{author: String, description: String|null, name: String, urls: Array<{name: String, href: String, color: ("default")}>}} Project
@@ -28,7 +18,7 @@ class CardProject {
         const CardActions = document.createElement("div");
         const CardTitle = document.createElement("span");
 
-        debug.log("CardProject", Project);
+        debug("CardProject", Project);
         
         /**
          * @param {String} icon 
@@ -63,8 +53,6 @@ class CardProject {
 
         // Set Card Content
         CardTitle.innerText = Project.name;
-        // CardContent.appendChild(ItemContent("local_offer", Project.name??"None"));
-        // CardContent.appendChild(ItemContent("person", Project.author??"Rawir"));
         CardContent.appendChild(CardTitle);
         
         if(typeof(Project.description) == 'string' && Project.description.length >= 1) {
@@ -73,8 +61,13 @@ class CardProject {
 
         
         Card.appendChild(CardContent);
-        if(!Project.urls) Project.urls = [];
-        Project.urls.push({ color: "#0984e3", name: "Github", href: Project.html_url })
+        if(!Project.urls) {
+            Project.urls = [];
+        };
+
+        if(Project.html_url) {
+            Project.urls.push({ color: "#0984e3", name: "Github", href: Project.html_url })
+        }
         
         // Set Card Actions
         if(Array.isArray(Project.urls) && Project.urls.length != 0) {
@@ -97,27 +90,45 @@ class CardProject {
         Column.appendChild(Card);
         Row.appendChild(Column);
 
-        return Row;        
+        return Row;
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    M.AutoInit(document.querySelector("#app"));
-    debug.log("DOMContentLoaded");
-    
-    document.querySelector("div.fixed-action-btn > a").click()
+// Auto init materialize
+addEventListener("DOMContentLoaded", function(){
+    M.AutoInit(document.querySelector(".container"));
+    document.querySelector("div.fixed-action-btn > a").click();
+    debug("DOMContentLoaded");
 });
 
-function FetchFailed(){
-    debug.log("Fetch Failed");
-    M.toast({html: 'Downloading Projects List Failed', displayLength: 1500, inDuration: 400, classes: "red darken-4"});
+// Show error toast
+function ShowError(err){
+    M.toast({
+        html: "Error: " + err,
+        displayLength: 1500,
+        inDuration: 650,
+        classes: "red darken-4"
+    })
 };
 
-fetch('https://api.github.com/users/Rawiros/repos')
-.then(async res => {
-    if(!res.ok) return FetchFailed();
+// Do request to github api
+fetch("https://api.github.com/users/Rawiros/repos")
+    .then(async response => {
+
+        if(!response.ok) {
+            var code = "HTTP_CODE_" + response.status;
+
+            debug(code)
+            ShowError(code);
+            return;
+        };
+
+        var Projects = await response.json();
+        debug("Projects", Projects);
+
+        Projects
+        .filter(Project => [...Project.topics].includes("page-include"))
+        .forEach(Project => DOM.Projects.appendChild(new CardProject(Project)));
+
+    }).catch(err => debug(err));
     
-    debug.log("Got repos list!");
-    var Projects = await res.json();
-    Projects.filter(project => project.topics.includes("page-include")).forEach(project => ProjectsList.appendChild(new CardProject(project)));
-});
