@@ -1,6 +1,6 @@
 body, html {background-color: rgb(23, 23, 23);}
 
-* {color: rgb(225, 225, 225) !important;}
+/* * {color: rgb(225, 225, 225) !important;} */
 
 li[projects] > a > * {
     color: #2980b9 !important;
@@ -22,12 +22,14 @@ div.background-blur {
     position: fixed;
     filter: blur(10px) brightness(0.4);
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
+}
+.inline-icon {
+    vertical-align: bottom;
+    font-size: 20px !important
 }
 
-img.profile-picture {
-    border-radius: 5.5px;
-}
+.material-icons {user-select: none !important;}
+
 input[type="color"] { border: transparent; }
 div.row { margin-bottom: unset !important; }
-img[src=""] { content:url("data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="); }
