@@ -3,6 +3,7 @@ var DOM = {
 };
 
 var debug = (...args) => console.log("%cDebug%c", "color:#0984e3", "color:unset", ...args);
+var WSPORT = 9842;
 
 // Class CardProject
 class CardProject {
@@ -94,38 +95,41 @@ class CardProject {
     }
 };
 
-// Auto init materialize
+// Auto init materialize etc.
 addEventListener("DOMContentLoaded", function(){
-    // Get days to birthday
-    var DaysToBirthday = daysTo(new Date(2007, 7, 11));
 
-    // get years in fandom
-    var FandomJoined = YearDifference(new Date(2021, 1, 2), new Date())
-    var FandomYearType = Math.floor(FandomJoined) <= 1 ? "year" : "years";
+    if(location.pathname == "/") {
+        var DaysToBirthday = daysTo(new Date(2007, 7, 11));
+    
+        // get years in fandom
+        var FandomJoined = YearDifference(new Date(2021, 1, 2), new Date())
+        var FandomYearType = Math.floor(FandomJoined) <= 1 ? "year" : "years";
+    
+        // add values
+        document.querySelector("info[icon=pets]").innerText += " " + FandomJoined.toFixed(1) + " " + FandomYearType;
+        document.querySelector("info[icon=event]").innerText += getAge(new Date(2007, 7, 11)) + " — " + DaysToBirthday + " days to birthday"
+    };
 
-    // add values
-    document.querySelector("info[icon=pets]").innerText += " " + FandomJoined.toFixed(1) + " " + FandomYearType;
-    document.querySelector("info[icon=event]").innerText += getAge(new Date(2007, 7, 11)) + " — " + DaysToBirthday + " days to birthday"
 
     Array.from(document.querySelectorAll("info[icon][tooltip][name]"))
-    .forEach(InfoElement => {
-        var p = document.createElement("p");
-        var i = document.createElement("i");
-        i.classList.add("small",  "inline-icon", "material-icons", "tooltipped");
-        i.setAttribute("data-position", "left");
-        i.setAttribute("data-tooltip", InfoElement.getAttribute("tooltip"));
-        i.innerText = InfoElement.getAttribute("icon");
+        .forEach(InfoElement => {
+            var p = document.createElement("p");
+            var i = document.createElement("i");
+            i.classList.add("small",  "inline-icon", "material-icons", "tooltipped");
+            i.setAttribute("data-position", "left");
+            i.setAttribute("data-tooltip", InfoElement.getAttribute("tooltip"));
+            i.innerText = InfoElement.getAttribute("icon");
+    
+            p.innerHTML += "<strong>" + InfoElement.getAttribute("name") + ":  </strong>" + InfoElement.innerHTML;
+    
+            p.insertBefore(i, p.querySelector("strong"));
+            InfoElement.parentElement.appendChild(p);
+            InfoElement.remove();
+            debug("Create Element", p);
+        });
 
-        p.innerHTML += "<strong>" + InfoElement.getAttribute("name") + ":  </strong>" + InfoElement.innerHTML;
-
-        p.insertBefore(i, p.querySelector("strong"));
-        InfoElement.parentElement.appendChild(p);
-        InfoElement.remove();
-        debug("Create Element", p);
-    });
-
-    M.AutoInit(document.querySelector(".container"));
-    // document.querySelector("div.fixed-action-btn > a").click();
+    M.AutoInit();
+    
     debug("DOMContentLoaded");
 });
 
