@@ -1,0 +1,39 @@
+:root {
+    --primary: #161721;
+    --secondary: #2E1468;
+
+    --text-primary: #b77bff;
+    --text-secondary: #AE9FCC;
+
+    --border-primary: #6A2DF7;
+    --button-primary: #2E1468;
+    --button-secondary: #421c9c;
+}
+
+body,
+html {
+    background-color: var(--primary);
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+body::-webkit-scrollbar,
+html::-webkit-scrollbar {
+    display: none;
+}
+
+* {
+    box-sizing: border-box;
+    /* Disable selection highlight on all elements */
+    -webkit-user-select: none;
+    /* Safari/Chrome */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+}
